@@ -1,36 +1,66 @@
-# Serbian Tourist RAG Bot
-
-Tourist Assistant — RAG Chatbot
-Izazov Hackathon 2024 (Red Black Tree)
-This project is an AI-powered tourist assistant developed during the Izazov Hackathon organized by Red Black Tree. It uses a Retrieval-Augmented Generation (RAG) pipeline to provide accurate travel recommendations based on a custom dataset of travel arrangements.
-The system uses multilingual embeddings (supports Serbian), FAISS vector search, OpenAI GPT-4o, and Google Custom Search for fetching related images.
-Features
-Retrieval-Augmented Generation (RAG) with FAISS and GPT-4o
-Multilingual embedding model (paraphrase-multilingual-MiniLM-L12-v2)
-Semantic search over travel arrangement dataset
-Flask backend with a /query endpoint
-Google Custom Search API for image retrieval
-Ngrok tunneling for public access
-URL extraction for dynamic image queries
-How It Works
-1. Data Loading
-The backend loads:
-index.faiss (FAISS index containing all embeddings)
-text_corpus_chunks.jsonl (list of dataset text chunks)
-2. Semantic Retrieval (R in RAG)
-The user query is encoded into an embedding.
-FAISS returns the top-k most similar dataset entries.
-3. Prompt Augmentation (A in RAG)
-Retrieved dataset chunks are inserted into the prompt along with the user’s question.
-4. Answer Generation (G in RAG)
-GPT-4o receives the augmented prompt and generates the final answer.
-5. Image Extraction
-The backend extracts search queries from the model's output and uses Google Custom Search to fetch related images.
+README
+Overview
+This project was developed for the Red Black Tree Hackathon.
+The goal was to build a Serbian-language tourist assistant that can answer user questions about travel arrangements, destinations, activities, prices, and available dates. The system uses Retrieval-Augmented Generation (RAG) to combine a local knowledge base with a large language model.
+The architecture consists of:
+An embedding model for semantic text search
+A FAISS vector index for fast similarity lookup
+A tourism knowledge base stored as text chunks
+An OpenAI GPT-4o model for generating natural-language answers
+A small Flask server with ngrok tunneling for mobile/web access
+Optional Google Custom Search for fetching related destination images
+Key Features
+Multilingual embeddings using the paraphrase-multilingual-MiniLM-L12-v2 model
+Fast semantic search over the travel dataset using FAISS
+Retrieval of the top-K relevant text chunks for each user query
+Conversation handling with context memory
+Generation of final answers using GPT-4o with inserted retrieved knowledge
+Extraction of URLs from responses and fetching of images via Google’s Custom Search API
+Flask API endpoint for external clients (/query)
+Project Structure
+Embeddings & Retrieval
+Loads a pretrained transformer embedding model (MiniLM) from Hugging Face
+Generates embeddings for user queries
+Searches the FAISS index to find relevant travel information
+Ranks and selects chunks based on embedding similarity scores
+Only relevant chunks are forwarded to GPT-4o as context
+GPT-4o Integration
+GPT-4o receives:
+Chat history
+Retrieved knowledge snippets
+User query
+Produces the final answer in Serbian
+Backend Server
+Flask HTTP server exposing /query endpoint
+Accepts JSON requests from frontend/mobile
+Uses ngrok to expose a public HTTPS URL
+Optionally fetches destination images using Google Custom Search API
+File Loading
+The system loads:
+index.faiss — vector index built from preprocessed travel text
+text_corpus_chunks.jsonl — aligned text chunks used for retrieval
+Both files must be stored in Google Drive or local storage and are loaded at startup.
+How It Works (Pipeline)
+User sends a message
+The message is encoded into an embedding
+FAISS returns the closest text chunks
+The backend prepares a combined prompt containing:
+System instructions
+Retrieved chunks
+Current user message
+GPT-4o generates the answer
+The backend extracts any URLs
+Google Custom Search provides image links
+Final response returned to the client
 Technologies Used
-Python (Flask)
-SentenceTransformers (MiniLM multilingual model)
-FAISS for vector similarity search
+Python
+Flask
+FAISS
+Hugging Face Sentence Transformers
 OpenAI GPT-4o
+ngrok
 Google Custom Search API
-Ngrok
-URLExtract and Requests
+If you'd like, I can also write:
+A Serbian version of the README
+A longer, more formal version for GitHub
+A version tailored for your CV or portfolio
